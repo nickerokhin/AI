@@ -79,6 +79,9 @@ def createnewstates(state):
         y = []
         lock = None
         takencoords = []
+        #Two tempstates necessary because overwriting would occur when same
+        #Variable is manipulated and used again
+        #Initializing key variables for state
         tempstate = state.copy()
         tempstate2 = state.copy()
         active = []
@@ -86,22 +89,26 @@ def createnewstates(state):
         newactive = []
         activefwd = []
         activeback = []
+        #All coordinates used by blocks that aren't the current block
         for key2 in state:
             if key2 != key:
                 for coords in state[key2]:
                     takencoords.append(coords)
-        #print(takencoords)
+        #Creating two arrays
         for i in state[key]:
             x.append(i[0])
             y.append(i[1])
 
+        #Checking which axis is locked
         if(all(i==x[0] for i in x)):
+            #All values the same in X axis
             active = y
             lock = 0
         if(all(i==y[0] for i in y)):
+            #All values the same in Y axis
             active = x
             lock = 1
-
+        #At "Left" edge
         if active[0] == 0:
             #cant move back
             newactive = [x + 1 for x in active]
@@ -121,7 +128,7 @@ def createnewstates(state):
                     states.append(tempstate)
                     #print("Changed:", key, " ", state[key], "to", newcoords )
 
-
+        #At "Right" edge
         elif active[-1] == 5:
             #cant move fwd
             newactive = [x - 1 for x in active]
@@ -141,6 +148,7 @@ def createnewstates(state):
                     #print("Changed:", key, " ", state[key], "to", newcoords )
 
         else:
+            #At neither edge
             activeback = [x - 1 for x in active]
             activefwd = [x + 1 for x in active]
             #if key == "Y":
@@ -185,19 +193,18 @@ def createnewstates(state):
                     #print(newcoordsfwd)
                     tempstate[key] = newcoordsfwd
                     states += [tempstate]
-                    if key == "Y":
-                        print("Cond front")
-                        pp.pprint(states)
                     #print("Changed:", key, " ", state[key], "to", newcoordsfwd )
 
                 if coordsavailable(newcoordsback, takencoords):
                     #print(newcoordsback)
                     tempstate2[key] = newcoordsback
                     states.append(tempstate2)
+                    #More Debug
                     #if key == "Y":
                     #    print("Cond Back")
                     #    pp.pprint(states)
                     #print("Changed:", key, " ", state[key], "to", newcoordsback )
+    #Debug
     '''
         if key == "Y":
             print(lock)
@@ -218,29 +225,27 @@ def createnewstates(state):
         print("\n")
         mat = [[" " for i in range(6)] for k in range(6)]
     '''
-    #pp.pprint(states)
+
     return states
 
-#reatenewstates(teststate)
 
-stateid = 0
-graph = {}
-nodes = []
-goal = [(2,4), (2,5)]
+
+
 
 def graphsearch(state):
+    goal = [(2,4), (2,5)]
     frontier = createnewstates(state)
     explored = [state]
     while 1:
-        #print(len(explored))
+
         if len(frontier) == 0:
             print("Frontier exhaused")
             #print("Final set length:", len(explored))
             return False
-        #print(len(frontier))
-        leaf = frontier.pop()
-        
 
+        leaf = frontier.pop()
+
+        #Used to visualize the state
         '''
         mat = [[" " for i in range(6)] for k in range(6)]
         for key in leaf:
@@ -252,12 +257,10 @@ def graphsearch(state):
 
         #pp.pprint(leaf)
 
-
-
-        #print(leaf["Y"])
-        #if leaf["R"] == goal:
-            #print("Solution Found!")
-            #return True
+        #Solution found
+        if leaf["R"] == goal:
+            print("Solution Found!")
+            return True
         explored.append(leaf)
         newfrontier = createnewstates(leaf)
         for i in newfrontier:
@@ -266,19 +269,22 @@ def graphsearch(state):
 
 
 def treesearch(state):
+    goal = [(2,4), (2,5)]
     frontier = createnewstates(state)
     while 1:
         if len(frontier) == 0:
             return False
         leaf = frontier.pop()
         if leaf["R"] == goal:
+            print("Success")
             return leaf
+
         frontier += createnewstates(leaf)
 
 
 
-graphsearch(initialstate)
+#graphsearch(initialstate)
 #print(board)
 #createnewstates(teststate4)
-
-#graphsearch(initialstate)
+#treesearch(initialstate)
+graphsearch(initialstate)
