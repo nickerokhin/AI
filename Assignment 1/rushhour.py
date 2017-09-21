@@ -11,6 +11,8 @@
 #Goal state (R: (2,4), (2,5))
 #(stateID, State)
 
+#Extremely hacky but working solution, needs cleaning
+
 import pprint
 import numpy as np
 pp = pprint.PrettyPrinter(indent=4)
