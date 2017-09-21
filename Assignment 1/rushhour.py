@@ -142,7 +142,7 @@ def createnewstates(state):
                 newcoords = [(newactive[i], y[i]) for i in range(0, len(active))]
                 if coordsavailable(newcoords, takencoords):
                     tempstate[key] = newcoords
-                    states.append(tempstate)
+                    states.append(maketupfromdict(tempstate))
                     #print("Changed:", key, " ", state[key], "to", newcoords )
 
 
@@ -151,7 +151,7 @@ def createnewstates(state):
                 newcoords = [(x[i], newactive[i]) for i in range(0, len(active))]
                 if coordsavailable(newcoords, takencoords):
                     tempstate[key] = newcoords
-                    states.append(tempstate)
+                    states.append(maketupfromdict(tempstate))
                     #print("Changed:", key, " ", state[key], "to", newcoords )
 
         #At "Right" edge
@@ -162,7 +162,7 @@ def createnewstates(state):
                 newcoords = [(newactive[i], y[i]) for i in range(0, len(active))]
                 if coordsavailable(newcoords, takencoords):
                     tempstate[key] = newcoords
-                    states.append(tempstate)
+                    states.append(maketupfromdict(tempstate))
                     #print("Changed:", key, " ", state[key], "to", newcoords )
 
             elif not lock:
@@ -170,7 +170,7 @@ def createnewstates(state):
                 newcoords = [(x[i], newactive[i]) for i in range(0, len(active))]
                 if coordsavailable(newcoords, takencoords):
                     tempstate[key] = newcoords
-                    states.append(tempstate)
+                    states.append(maketupfromdict(tempstate))
                     #print("Changed:", key, " ", state[key], "to", newcoords )
 
         else:
@@ -189,7 +189,7 @@ def createnewstates(state):
                 #    print(newcoordsback)
                 if coordsavailable(newcoordsfwd, takencoords):
                     tempstate[key] = newcoordsfwd
-                    states += [tempstate]
+                    states += [maketupfromdict(tempstate)]
                     #if key == "Y":
                     #    print("Cond fwd")
                     #    print(tempstate)
@@ -201,7 +201,7 @@ def createnewstates(state):
                 if coordsavailable(newcoordsback, takencoords):
                     #print(newcoordsback
                     tempstate2[key] = newcoordsback
-                    states.append(tempstate2)
+                    states.append(maketupfromdict(tempstate2))
 
                     #if key == "Y":
                     #    print("Cond back")
@@ -218,13 +218,13 @@ def createnewstates(state):
                 if coordsavailable(newcoordsfwd, takencoords):
                     #print(newcoordsfwd)
                     tempstate[key] = newcoordsfwd
-                    states += [tempstate]
+                    states += [maketupfromdict(tempstate)]
                     #print("Changed:", key, " ", state[key], "to", newcoordsfwd )
 
                 if coordsavailable(newcoordsback, takencoords):
                     #print(newcoordsback)
                     tempstate2[key] = newcoordsback
-                    states.append(tempstate2)
+                    states.append(maketupfromdict(tempstate2))
                     #More Debug
                     #if key == "Y":
                     #    print("Cond Back")
@@ -261,7 +261,7 @@ def createnewstates(state):
 def graphsearch(state):
     goal = [(2,4), (2,5)]
     frontier = createnewstates(state)
-    explored = [state]
+    explored = set([state])
     while 1:
 
         if len(frontier) == 0:
@@ -270,24 +270,27 @@ def graphsearch(state):
             return False
 
         leaf = frontier.pop()
-
+        leafdict = makedictfromtup(leaf)
         #Used to visualize the state
-
+        #Uncomment this to visualize the board via a matrix
+        '''
         mat = [[" " for i in range(6)] for k in range(6)]
-        for key in leaf:
-            for j in leaf[key]:
+        for key in leafdict:
+            for j in leafdict[key]:
                 mat[j[0]][j[1]] = key
         mat = np.matrix(mat)
         print(mat)
+        '''
 
 
         #pp.pprint(leaf)
 
         #Solution found
-        if leaf["R"] == goal:
-            print("Solution Found!")
-            return True
-        explored.append(leaf)
+        #Uncomment this to find solution asap
+        #if leafdict["R"] == goal:
+            #print("Solution Found!")
+            #return True
+        explored.add(leaf)
         newfrontier = createnewstates(leaf)
         for i in newfrontier:
             if i not in explored:
@@ -307,13 +310,14 @@ def treesearch(state):
 
         frontier += createnewstates(leaf)
 
-pp.pprint(initialstate)
-statetuple = maketupfromdict(initialstate)
-print(statetuple)
-statedict = makedictfromtup(statetuple)
-pp.pprint(statedict)
+#pp.pprint(initialstate)
+#tatetuple = maketupfromdict(initialstate)
+#print(statetuple)
+#statedict = makedictfromtup(statetuple)
+#pp.pprint(statedict)
 #graphsearch(initialstate)
 #print(board)
 #createnewstates(teststate4)
 #treesearch(initialstate)
-#graphsearch(initialstate)
+initialstate = maketupfromdict(initialstate)
+graphsearch(initialstate)
