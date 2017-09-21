@@ -8,10 +8,13 @@
 
 #Returns possible states
 limits = [40, 40, 5, 4]
-start = [40, 40, 0, 0]
+start = (40, 40, 0, 0)
+import pprint
+pp = pprint.PrettyPrinter(indent=4)
 
 
 def expandfrontier(state):
+    state = (state[0], state[1], state[2], state[3])
     states = []
     newstate = list(state)
     newstate2 = list(state)
@@ -29,16 +32,17 @@ def expandfrontier(state):
 
                 else:
                     #now the fun begins
-                    maxpour = limits[k] - state[k]
-                    possiblepour = state[k]
-                    if maxpour < possiblepour:
+                    maxpour = limits[i] - state[i]
+                    possiblefill = limits[k] - state[k]
+                    if maxpour < possiblefill:
                         pour = maxpour
                     else:
-                        pour = possiblepour
+                        pour = possiblefill
 
                     newstate[i] = state[i] - pour
                     newstate[k] = state[k] + pour
-                    states.append(list(newstate))
+                    if all(newstate[i] >= 0 and newstate[i] <= limits[i] for i in range(0, len(newstate))):
+                        states.append((newstate[0], newstate[1], newstate[2], newstate[3]))
                     newstate = list(state)
 
 
@@ -53,19 +57,28 @@ def expandfrontier(state):
                     continue
 
                 else:
-                    maxfill = limits[i] - state[i]
-                    possiblefillk = state[k]
-                    if maxfill < possiblefillk:
+                    maxpour = state[k]
+                    possiblefillk = limits[i] - state[i]
+                    #print(state)
+                    if maxpour < possiblefillk:
                         fill = maxfill
                         newstate[k] = newstate[k] - fill
                         newstate[i] = newstate[i] + fill
-                        states.append(list(newstate))
+                        if all(newstate[i] >= 0 and newstate[i] <= limits[i] for i in range(0, len(newstate))):
+                            #print(maxpour)
+                            #print(possiblefillk)
+                            #print(newstate)
+                            states.append((newstate[0], newstate[1], newstate[2], newstate[3]))
                         newstate = list(state)
                     else:
                         fill = possiblefillk
                         newstate[k] =  newstate[k] - fill
                         newstate[i] = newstate[i] + fill
-                        states.append(list(newstate))
+                        if all(newstate[i] >= 0 and newstate[i] <= limits[i] for i in range(0, len(newstate))):
+                            #print(maxpour)
+                            #print(possiblefillk)
+                            #rint(newstate)
+                            states.append((newstate[0], newstate[1], newstate[2], newstate[3]))
                         newstate = list(state)
 
         else:
@@ -79,13 +92,15 @@ def expandfrontier(state):
                     #i can fill k
                     maxfill = limits[k] - state[k]
                     possiblefilli = state[i]
+
                     if possiblefilli > maxfill:
                         fill = maxfill
                     else:
                         fill = possiblefilli
                     newstate[i] = newstate[i] - fill
                     newstate[k] = newstate[k] + fill
-                    states.append(list(newstate))
+                    if all(newstate[i] >= 0 and newstate[i] <= limits[i] for i in range(0, len(newstate))):
+                        states.append((newstate[0], newstate[1], newstate[2], newstate[3]))
                     newstate = list(state)
 
                 if state[i] < limits[i]:
@@ -98,7 +113,8 @@ def expandfrontier(state):
                         fill = possiblefillk
                     newstate[i] = newstate[i] + fill
                     newstate[k] = newstate[k] - fill
-                    states.append(list(newstate))
+                    if all(newstate[i] >= 0 and newstate[i] <= limits[i] for i in range(0, len(newstate))):
+                        states.append((newstate[0], newstate[1], newstate[2], newstate[3]))
                     newstate = list(state)
 
     return states
@@ -108,24 +124,28 @@ def expandfrontier(state):
 def graphsearch(state):
 
     frontier = expandfrontier(state)
-    explored = [state]
+    explored = set([state])
     while 1:
 
         if len(frontier) == 0:
             print("Frontier exhaused")
             print("Final set length:", len(explored))
-            return False
+            return explored
 
         leaf = frontier.pop()
         print(leaf)
         #Solution found
-        if state[2] == state[3] == 2:
+        if leaf[2] == leaf[3] == 2:
             print("Solution Found!")
             #return True
-        explored.append(leaf)
+        explored.add(leaf)
         newfrontier = expandfrontier(leaf)
         for i in newfrontier:
-            if i not in explored:
+            if i in explored:
+                pass
+            else:
                 frontier.append(i)
 
-graphsearch(start)
+
+explored = graphsearch(start)
+pp.pprint(explored)
