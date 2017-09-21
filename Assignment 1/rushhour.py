@@ -24,6 +24,8 @@ initialstate = {"LG": [(0,0), (0,1)],
           "DB": [(1,3), (2, 3), (3,3)],
           "R": [(2,1), (2,2)]}
 
+
+
 teststate = {"LG": [(0,1), (0,2)],
           "Y": [(0,5), (1,5), (2,5)],
           "P": [(1,0),(2,0),(3,0)],
@@ -52,7 +54,7 @@ teststate3 = {"LG": [(0,1), (0,2)],
           "DB": [(1,3), (2, 3), (3,3)],
           " R": [(2,1), (2,2)]}
 
-teststate4 = {   'BR': [(3, 0), (4, 0)],
+teststate4 = {'BR': [(3, 0), (4, 0)],
     'DB': [(1, 3), (2, 3), (3, 3)],
     'DG': [(5, 0), (5, 1), (5, 2)],
     'LB': [(4, 1), (4, 2)],
@@ -61,6 +63,29 @@ teststate4 = {   'BR': [(3, 0), (4, 0)],
     'R': [(2, 1), (2, 2)],
     'Y': [(2, 5), (3, 5), (4, 5)]}
 
+def makedictfromtup(i):
+    statedict = dict()
+    statedict["LG"] = list(i[0])
+    statedict["Y"] = list(i[1])
+    statedict["P"] = list(i[2])
+    statedict["BR"] = list(i[3])
+    statedict["DG"] = list(i[4])
+    statedict["LB"] = list(i[5])
+    statedict["DB"] = list(i[6])
+    statedict["R"] = list(i[7])
+    return statedict
+
+def maketupfromdict(statedict):
+
+    tup1 = tuple(statedict["LG"])
+    tup2 = tuple(statedict["Y"])
+    tup3 = tuple(statedict["P"])
+    tup4 = tuple(statedict["BR"])
+    tup5 = tuple(statedict["DG"])
+    tup6 = tuple(statedict["LB"])
+    tup7 = tuple(statedict["DB"])
+    tup8 = tuple(statedict["R"])
+    return (tup1, tup2, tup3, tup4, tup5, tup6, tup7, tup8)
 
 def coordsavailable(newcoords, coords):
     if newcoords == []:
@@ -73,6 +98,7 @@ def coordsavailable(newcoords, coords):
 
 def createnewstates(state):
     states = []
+    state = makedictfromtup(state)
 
     for key in state:
         x = []
@@ -240,20 +266,20 @@ def graphsearch(state):
 
         if len(frontier) == 0:
             print("Frontier exhaused")
-            #print("Final set length:", len(explored))
+            print("Final set length:", len(explored))
             return False
 
         leaf = frontier.pop()
 
         #Used to visualize the state
-        '''
+
         mat = [[" " for i in range(6)] for k in range(6)]
         for key in leaf:
             for j in leaf[key]:
                 mat[j[0]][j[1]] = key
         mat = np.matrix(mat)
         print(mat)
-        '''
+
 
         #pp.pprint(leaf)
 
@@ -281,10 +307,13 @@ def treesearch(state):
 
         frontier += createnewstates(leaf)
 
-
-
+pp.pprint(initialstate)
+statetuple = maketupfromdict(initialstate)
+print(statetuple)
+statedict = makedictfromtup(statetuple)
+pp.pprint(statedict)
 #graphsearch(initialstate)
 #print(board)
 #createnewstates(teststate4)
 #treesearch(initialstate)
-graphsearch(initialstate)
+#graphsearch(initialstate)
