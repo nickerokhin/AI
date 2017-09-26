@@ -26,8 +26,6 @@ initialstate = {"LG": [(0,0), (0,1)],
           "DB": [(1,3), (2, 3), (3,3)],
           "R": [(2,1), (2,2)]}
 
-
-
 teststate = {"LG": [(0,1), (0,2)],
           "Y": [(0,5), (1,5), (2,5)],
           "P": [(1,0),(2,0),(3,0)],
@@ -45,7 +43,6 @@ teststate2 = {"LG": [(0,1), (0,2)],
           "LB": [(4, 3), (4, 4)],
           "DB": [(1,3), (2, 3), (3,3)],
           "R": [(2,1), (2,2)]}
-
 
 teststate3 = {"LG": [(0,1), (0,2)],
           "Y": [(1,5), (2,5), (3,5)],
@@ -90,12 +87,14 @@ def maketupfromdict(statedict):
     return (tup1, tup2, tup3, tup4, tup5, tup6, tup7, tup8)
 
 def coordsavailable(newcoords, coords):
+
     if newcoords == []:
         return False
-    #print(coords)
+
     for i in newcoords:
         if i in coords:
             return False
+
     return True
 
 def createnewstates(state):
@@ -289,8 +288,14 @@ def graphsearch(state):
 
         #Solution found
         #Uncomment this to find solution asap
-        #if leafdict["R"] == goal:
-            #print("Solution Found!")
+        if leafdict["R"] == goal:
+            print("Solution Found in %d turns!" %(len(explored)))
+            mat = [[" " for i in range(6)] for k in range(6)]
+            for key in leafdict:
+                for j in leafdict[key]:
+                    mat[j[0]][j[1]] = key
+            mat = np.matrix(mat)
+            print(mat)
             #return True
         explored.add(leaf)
         newfrontier = createnewstates(leaf)
